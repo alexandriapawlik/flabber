@@ -1,0 +1,57 @@
+akp:/fileVerificationTruffle/$ truffle migrate --network poa --reset
+
+Compiling your contracts...
+===========================
+> Everything is up to date, there is nothing to compile.
+
+
+Starting migrations...
+======================
+> Network name:    'poa'
+> Network id:      17000
+> Block gas limit: 0x2faf080
+
+
+2_fileregistry_migration.js
+===========================
+
+   Replacing 'FileRegistry'
+   ------------------------
+   > transaction hash:    0x7b116bbf303bdc67a7ae02f98700d8440a34041392c4571241bf667dd2f5ba15
+   > Blocks: 0            Seconds: 0
+   > contract address:    0xDb198Dc659d166408C2A15aDb2662aAc4b007bF7
+   > block number:        241109
+   > block timestamp:     1564061776
+   > account:             0x4D655bd3ae5f80fD8c1114D7EEEcA948D1e19ada
+   > balance:             0
+   > gas used:            956530
+   > gas price:           0 gwei
+   > value sent:          0 ETH
+   > total cost:          0 ETH
+
+
+   Replacing 'File'
+   ----------------
+   > transaction hash:    0x3048ba5cd4313ca312d27aa1cb0ab515a785568d6bb0d063d915eb52da476581
+   > Blocks: 0            Seconds: 0
+   > contract address:    0x36a2B9E3326916b70FF00e81058D890EFBa22E31
+   > block number:        241110
+   > block timestamp:     1564061780
+   > account:             0x4D655bd3ae5f80fD8c1114D7EEEcA948D1e19ada
+   > balance:             0
+   > gas used:            3526450
+   > gas price:           0 gwei
+   > value sent:          0 ETH
+   > total cost:          0 ETH
+
+
+   > Saving migration to chain.
+   > Saving artifacts
+   -------------------------------------
+   > Total cost:                   0 ETH
+
+
+Summary
+=======
+> Total deployments:   2
+> Final cost:          0 ETH
