@@ -155,17 +155,17 @@ namespace Flabber
         // returns state of new receipt (verification result)
         public async Task<string> VerifyFile(string fileId)
         {
-						if (RegistryAddress != null)
+			if (RegistryAddress != null)
             {
                 // get file hash and metadata hash
-            		string fileHash = await MyDriveManager.GetFileHash(RegistryAddress, fileId);
-            		string metadataHash = await MyDriveManager.GetMetadataHash(RegistryAddress, fileId);
+            	string fileHash = await MyDriveManager.GetFileHash(RegistryAddress, fileId);
+            	string metadataHash = await MyDriveManager.GetMetadataHash(RegistryAddress, fileId);
 
-            		// get name of current user
-            		string user = await MyDriveManager.GetMe();
+            	// get name of current user
+            	string user = await MyDriveManager.GetMe();
 
-            		// make new receipt contract
-            		return MyEthManager.NewReceipt(RegistryAddress, fileId, fileHash, metadataHash, user);
+            	// make new receipt contract
+            	return await MyEthManager.NewReceipt(RegistryAddress, fileId, fileHash, metadataHash, user);
             }
 
             throw new Exception("No file registry chosen");

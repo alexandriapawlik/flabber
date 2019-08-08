@@ -13,6 +13,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 using Microsoft.Identity.Client;
 
@@ -76,23 +78,43 @@ namespace Flabber.Login
             // cache empty or no token for account in the cache, attempt interactively
             if (authenticationResult == null)
             {
-                // aquire an access token for this app interactively
-                authenticationResult = app.AcquireTokenInteractive(Constants.Scopes)
-                    .ExecuteAsync().GetAwaiter().GetResult();
+                // define cancellation token
+                CancellationTokenSource source = new CancellationTokenSource();
+                CancellationToken cancelToken = source.Token;
 
-                if (authenticationResult != null)
+                try
                 {
-                    token = authenticationResult.AccessToken;
-                }
-                else
-                {
-                    throw new Exception("Authentication failed");
-                }
+                    // aquire an access token for this app interactively
+                    authenticationResult = app.AcquireTokenInteractive(Constants.Scopes)
+                        .ExecuteAsync(cancelToken).GetAwaiter().GetResult();
 
-                if (token == null)
-                {
-                    throw new Exception("Unable to aquire authentication token");
+                    if (authenticationResult != null)
+                    {
+                        token = authenticationResult.AccessToken;
+                    }
+                    else
+                    {
+                        throw new Exception("Authentication failed");
+                    }
+
+                    if (token == null)
+                    {
+                        throw new Exception("Unable to aquire authentication token");
+                    }
                 }
+                catch (AggregateException ae) {
+                    foreach (Exception e in ae.InnerExceptions)
+                    {
+                        if (e is TaskCanceledException)
+                            throw new TaskCanceledException("Login timeout", e);
+                        else
+                            throw e;
+                    }
+                }
+                finally
+                {
+                    source.Dispose();
+                } 
             }
 
             return token;

@@ -14,7 +14,6 @@ using System;
 using System.Threading.Tasks;
 
 using Nethereum.Web3;
-using Nethereum.Contracts;
 using Nethereum.Web3.Accounts;
 
 using Flabber.Infrastructure;
@@ -67,41 +66,53 @@ namespace Flabber.Eth
         // adds new file contract for file with provided data
         public async Task NewFile(string registryAddress, File file, string fileHash, string metadataHash)
         {
-            // deploy new file contract to blockchain
-            await DeployFile.SendRequestAsync(MyWeb3, registryAddress, file.Name, file.FileId,
-                fileHash, metadataHash, file.Type, file.Etag);
+            // check if it worked
+            if (await NewFilePrivate(registryAddress, file, fileHash, metadataHash))
+            {
+                return;
+            }
+            else
+            {
+                // check if it worked second time
+                if (await NewFilePrivate(registryAddress, file, fileHash, metadataHash))
+                {
+                    return;
+                }
+                else
+                {
+                    throw new Exception("File could not be registered");
+                }
+            } 
         }
 
         // adds new receipt contract for file with fileid and provided hashes
         // returns state of new receipt
-        public string NewReceipt(string registryAddress, string fileId, string fileHash, string metadataHash, string verifiedBy)
+        public async Task<string> NewReceipt(string registryAddress, string fileId, string fileHash,
+            string metadataHash, string verifiedBy)
         {
-            // sometimes requires multiple runs to succeed
-            int loops = 0;
+            int state = await NewReceiptPrivate(registryAddress, fileId, fileHash,
+                metadataHash, verifiedBy);
 
-            while (loops < 4)
+            // check if it worked
+            if (state != 0)
             {
-                // deploy new receipt contract to blockchain
-                // must run sync
-                string receiptAddress = DeployReceipt.SendRequestAsync(MyWeb3, registryAddress, fileId,
-                    fileHash, metadataHash, verifiedBy).GetAwaiter().GetResult();
+                return (StateConvert.IntToString(state));
+            }
+            else
+            {
+                state = await NewReceiptPrivate(registryAddress, fileId, fileHash,
+                metadataHash, verifiedBy);
 
-                // get state of receipt
-                // must run sync
-                int state = GetState.SendRequestAsync(MyWeb3, receiptAddress).GetAwaiter().GetResult();
-
-                // if it didn't work, add a loop
-                if (state == 0)
-                {
-                    ++loops;
-                }
-                else
+                // check if it worked second time
+                if (state != 0)
                 {
                     return (StateConvert.IntToString(state));
                 }
+                else
+                {
+                    throw new Exception("Receipt could not be created");
+                }
             }
-
-            throw new Exception("Receipt could not be created");
         }
 
         // gets receipt datetimes, states, and verifiers for file with fileid
@@ -209,6 +220,38 @@ namespace Flabber.Eth
             }
 
             return filtered;
+        }
+
+
+        ////////////////////////////////////////////////////////
+
+
+        // returns true if success
+        private async Task<bool> NewFilePrivate(string registryAddress, File file, string fileHash, string metadataHash)
+        {
+            // get number of files
+            int count1 = await GetNumberOfFiles.SendRequestAsync(MyWeb3, registryAddress);
+
+            // deploy new file contract to blockchain
+            await DeployFile.SendRequestAsync(MyWeb3, registryAddress, file.Name, file.FileId,
+                fileHash, metadataHash, file.Type, file.Etag);
+
+            // check that number of files increased
+            int count2 = await GetNumberOfFiles.SendRequestAsync(MyWeb3, registryAddress);
+
+            return ((count2 - count1) == 1);
+        }
+
+        // returns state
+        private async Task<int> NewReceiptPrivate(string registryAddress, string fileId, string fileHash,
+            string metadataHash, string verifiedBy)
+        {
+            // deploy new receipt contract to blockchain
+            string receiptAddress = await DeployReceipt.SendRequestAsync(MyWeb3, registryAddress, fileId,
+                fileHash, metadataHash, verifiedBy);
+
+            // get state of receipt
+            return await GetState.SendRequestAsync(MyWeb3, receiptAddress);
         }
     }
 }
