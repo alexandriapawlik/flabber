@@ -15,14 +15,15 @@ contract Library
 		address Address;
 		string Name; 
 		uint Index;
+		bool Active;
 	}
 
 	// registry tracking
   mapping(address => RegistryStruct) internal RegistryContractAddressLookup;
 	address[] internal RegistryAddressIndex;
 
+
 	// adds registry to library
-	// called by registry constructor
   function AddRegistry(address ContractAddress, string Name) 
 	external
 	{
@@ -32,6 +33,13 @@ contract Library
 		RegistryContractAddressLookup[ContractAddress].Address = ContractAddress;
 		RegistryContractAddressLookup[ContractAddress].Name = Name;
 		RegistryContractAddressLookup[ContractAddress].Index = RegistryAddressIndex.push(ContractAddress)-1;
+		RegistryContractAddressLookup[ContractAddress].Active = true;
+	}
+
+	function DeactivateRegistry(address ContractAddress)
+	external
+	{
+		RegistryContractAddressLookup[ContractAddress].Active = false;
 	}
 
 	function GetNumberOfRegistries()
@@ -62,6 +70,17 @@ contract Library
 		require(Index < RegistryAddressIndex.length, "Index passed to GetRegistryNameAtIndex is too large.");
 
     at =  RegistryContractAddressLookup[RegistryAddressIndex[Index]].Name;
+  }
+
+	function IsRegistryActiveAtIndex(uint Index)
+  external
+  view
+  returns(bool active)
+  {
+		// check bounds
+		require(Index < RegistryAddressIndex.length, "Index passed to IsRegistryActiveAtIndex is too large.");
+
+    active = RegistryContractAddressLookup[RegistryAddressIndex[Index]].Active;
   }
 
 

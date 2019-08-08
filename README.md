@@ -8,41 +8,16 @@ A .NET Core 2.1 console application that accesses private Ethereum blockchain co
 <br />
 <br />
 
-Overview
---------
-
-<br />
-
-- **EthInteraction** manages calls to the Ethereum consortium blockchain using smart contracts' encoded function definitions.
-- **DriveInteraction** manages calls to the Microsoft Graph API using **TokenProvider** to get an access token and **ProtectedApiCallHelper** to make calls to the Microsoft Graph API and process the JSON results.
-- **VerificationManager** contains an EthInteraction instance and a DriveInteraction instance and combines the methods into 5 basic functions that can be called by the console.
-
-<br />
-
-#### Functions Available to the Console
-1. VerifyFile: generate a new receipt for a specific file and view its verification state
-2. GetHistory: view the history of all verifications of a specific file
-3. GetFileList: view all files available for verification
-4. GetFilesToRegister: view all files that have not yet been added to the registry
-5. RegisterFile: add a specific file to the registry
-
-<br />
-
-The key value used to track files is the file ID, assigned by OneDrive to a file upon upload. This means that the only way a file can be editted but retain its identity is if it's editted within the OneDrive environment. 
-The key value used to identify changes in a file is the xor hash, which changes each time an edit is made to a file's content.
-
-<br />
-<br />
-
 Smart Contracts
 ----------------
 
 <br />
 
 File data is stored on the blockchain using 3 smart contracts:
-1. **File Registry**: contains a set of files
-2. **File**: stores file-specific data and contains a set of receipts
-3. **Receipt**: stores verification-instance-specific file data
+1. **Library**: contains a set of registries
+2. **File Registry**: stores a name and contains a set of files
+3. **File**: stores file-specific data and contains a set of receipts
+4. **Receipt**: stores verification-instance-specific file data
 
 <br />
 <br />

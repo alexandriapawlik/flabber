@@ -12,9 +12,6 @@ contract FileRegistry
 	///////////////// public data
 
 
-	enum StateType { Open, Closed }
-	StateType public State;
-
   string public Name;
 	string public Description;
 
@@ -49,23 +46,12 @@ contract FileRegistry
 		// add to library
 		Library MyLibrary = Library(libraryAddress);
 		MyLibrary.AddRegistry(address(this), name);
-
-		// update state
-		State = StateType.Open;
-	}
-
-	// stop new files from being registered
-	function CloseRegistry() 
-	external 
-	{
-		State = StateType.Closed;
 	}
 
 	// adds file to registry
   function RegisterFile(address FileContractAddress, string FileId) 
 	external
 	{
-		require(State == StateType.Open, "File cannot be added to a registry that is not open.");
 		require(!IsRegisteredFileContractAddress(FileContractAddress), "This contract address cannot be registered to a second file.");
 
 		// add lookup by address
