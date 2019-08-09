@@ -1,4 +1,4 @@
-File Verification
+Flabber: File Verification
 =================
 
 <br />
@@ -8,23 +8,17 @@ A .NET Core 2.1 console application that accesses private Ethereum blockchain co
 <br />
 <br />
 
-Smart Contracts
-----------------
-
-<br />
-
-File data is stored on the blockchain using 3 smart contracts:
-1. **Library**: contains a set of registries
-2. **File Registry**: stores a name and contains a set of files
-3. **File**: stores file-specific data and contains a set of receipts
-4. **Receipt**: stores verification-instance-specific file data
-
-<br />
-<br />
-
 About the Code
 --------------
 
+<br />
+
+The FlabberManager class encapsulates a DriveManager, EthManager, and LoginManager, which together provide all functionality required for user interaction. 
+- DriveManager makes all required calls to the Microsoft Graph API
+- EthManager makes all required calls to the Ethereum blockchain's JSON-RPC API
+- LoginManager aquires an access token and manages the app's allowed users
+
+<br />
 <br />
 
 To call the Microsoft Graph API:
@@ -41,3 +35,17 @@ To call Ethereum's Web3 API:
 2. Console creates an admin Ethereum account using private key
 3. Console queries data as admin without submitting a transaction
 4. Console queries data that changes blockchain state by signing transactions with private key
+
+<br />
+<br />
+
+Smart Contracts
+----------------
+
+<br />
+
+File data is stored on the blockchain using 3 smart contracts:
+1. **Library**: contains a set of registries
+2. **File Registry**: stores a name and contains a set of files
+3. **File**: stores file-specific data and contains a set of receipts
+4. **Receipt**: stores verification-instance-specific file data
