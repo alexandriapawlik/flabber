@@ -6,6 +6,12 @@
 // File:		ApiCallHelper class
 // Purpose:		Calls protected Microsoft Graph API and processes result
 
+//              Note:
+//              all public functions in this class make assumptions
+//              about the structure of the JSON responses that they will
+//              receive from the HttpClient function calls.
+
+
 //////////////////////////////////////////////
 
 
@@ -30,7 +36,8 @@ namespace Flabber.Drive
             MyHttpClient = new HttpClient();
         }
 
-        // calls the protected Web API to get data at specified url
+        // makes a request to the specified URL using the given access token
+        // and parses the JSON response into a string containing only the requested data
         public async Task<string> CallWebApiAndProcessResultAsync(string webApiUrl, string accessToken)
         {
             if (string.IsNullOrEmpty(accessToken))
@@ -49,7 +56,8 @@ namespace Flabber.Drive
             throw new Exception($"API call failed: {response.StatusCode}");
         }
 
-        // calls the protected Web API and processes the result to get a list of files
+        // makes a request to the specified URL using the given access token
+        // and parses the JSON response into a FileList object
         public async Task<FileList> CallWebApiFileListAndProcessResultAsync(string webApiUrl, string accessToken)
         {
             if (string.IsNullOrEmpty(accessToken))
@@ -95,7 +103,8 @@ namespace Flabber.Drive
             throw new Exception($"File list API call failed: {response.StatusCode}");
         }
 
-        // calls the protected Web API and processes the result to get data about a file
+        // makes a request to the specified URL using the given access token
+        // and parses the JSON response into a File object
         public async Task<File> CallWebApiFileAndProcessResultAsync(string webApiUrl, string accessToken)
         {
             if (string.IsNullOrEmpty(accessToken))

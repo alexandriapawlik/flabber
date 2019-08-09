@@ -5,6 +5,7 @@
 
 // File:		FlabberManager class
 // Purpose:		Encapsulates all of web app user's options in one object
+//              Is the only object that the driver program needs to create
 
 //////////////////////////////////////////////
 
@@ -54,27 +55,30 @@ namespace Flabber
         ////////////////////////////////////////////////////////
 
 
-        // change the registry address to work with a new registry
+        // changes the stored registry address to allow the object to work with a different registry
+        // must be called at least once before GetFilesToRegister, GetFilesToVerify, GetHistory,
+        // RegisterFile, or VerifyFile can be called
         public void SetRegistry(string registryAddress)
         {
             RegistryAddress = registryAddress;
         }
 
-        // gets registry names and addresses
+        // returns a RegistryList object containing the current active registries in the library
         public async Task<RegistryList> GetRegistryList()
         {
             return await MyEthManager.GetRegistryList();
         }
 
-        // create a new file registry
-        // returns the address of the deployed contract
+        // creates a new file registry
+        // returns the address of the deployed FileRegistry smart contract
+        // so that it can be added to the mappings in Constants.cs
         public async Task<string> AddRegistry(string name, string description)
         {
             // add new file registry contract
             return await MyEthManager.NewRegistry(name, description);
         }
 
-        // remove a registry from the library
+        // removes a regsitry from the library by setting its state to deactive
         public async Task RemoveRegistry(string registryAddress)
         {
             if (registryAddress == null)
@@ -86,8 +90,8 @@ namespace Flabber
             await MyEthManager.RemoveRegistry(registryAddress);
         }
 
-        // returns a list of files in the onedrive folder
-        // that have not yet been added to registry
+        // returns a FileList object containing the files in OneDrive
+        // that have not yet been added to the current file registry
         public async Task<FileList> GetFilesToRegister()
         {
             if (RegistryAddress != null)
@@ -102,8 +106,8 @@ namespace Flabber
             throw new Exception("No file registry chosen");
         }
 
-        // returns a list of the files in the onedrive folder
-        // that have already been added to registry
+        // returns a FileList object containing the files in OneDrive
+        // that have been added to the current file registry
         public async Task<FileList> GetFilesToVerify()
         {
             if (RegistryAddress != null)
@@ -118,7 +122,8 @@ namespace Flabber
             throw new Exception("No file registry chosen");
         }
 
-        // returns the history of verifications of the file of given id
+        // returns a History object containing all the existing receipts
+        // for the file with the given ID
         public async Task<History> GetHistory(string fileId)
         {
             if (RegistryAddress != null)
@@ -130,8 +135,8 @@ namespace Flabber
             throw new Exception("No file registry chosen");
         }
 
-        // add a new file to the registry
-        // returns the name of registered file
+        // adds a new file to the current file registry
+        // returns the name of the registered file
         public async Task<string> RegisterFile(string fileId)
         {
             if (RegistryAddress != null)
@@ -151,8 +156,8 @@ namespace Flabber
             throw new Exception("No file registry chosen");
         }
 
-        // generate new receipt for file of given id
-        // returns state of new receipt (verification result)
+        // generates a new verification receipt for the file with the given ID
+        // returns the verification result of the new receipt
         public async Task<string> VerifyFile(string fileId)
         {
 			if (RegistryAddress != null)
@@ -171,8 +176,9 @@ namespace Flabber
             throw new Exception("No file registry chosen");
         }
 
-        // get new user token (only use if token does not work)
-        // returns false if token is null
+        // gets a new login token for the user, which will require them to sign in again
+        // returns false if the token is null
+        // should only be used if the user needs to re-sign in for some reason
         public bool NewToken()
         {
             Token = MyLoginManager.GetToken();

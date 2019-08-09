@@ -83,7 +83,8 @@ contract Receipt
 		return MetadataHash;
 	}
 
-	// get function for state enum variable
+	// returns 0, 1 or 2 representing
+  // the state of the receipt as indexed in the enumeration {Stopped, Success, Failure}
 	function GetStateInt()
 	external
 	view

@@ -1,4 +1,14 @@
-﻿using System;
+﻿//////////////////////////////////////////////
+
+// Project:		File Verification Web App
+// Author:		Alexandria Pawlik
+
+// File:		DriveManager class
+// Purpose:		Initiates all interactions with OneDrive
+
+//////////////////////////////////////////////
+
+
 using System.Threading.Tasks;
 
 using Flabber.Infrastructure;

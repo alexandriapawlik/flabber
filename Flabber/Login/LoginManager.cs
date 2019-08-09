@@ -44,7 +44,7 @@ namespace Flabber.Login
         ////////////////////////////////////////////////////////
 
 
-		// opens login window and aquires authentication token
+        // aquires a token from the cache or by interactive login and returns it
         public string GetToken()
         {
             string token = "";
@@ -120,6 +120,7 @@ namespace Flabber.Login
             return token;
         }
 
+        // checks if the user exists in the allowed users list
         public bool IsAllowed(string user)
         {
             return Users.Contains(user);

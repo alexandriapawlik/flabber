@@ -49,7 +49,7 @@ namespace Flabber.Eth
         ////////////////////////////////////////////////////////
 
 
-        // create a new file registry
+        // deploys a new FileRegistry smart contract in the library
         // returns the address of the deployed contract
         public async Task<string> NewRegistry(string name, string description)
         {
@@ -57,13 +57,13 @@ namespace Flabber.Eth
             return await DeployRegistry.SendRequestAsync(MyWeb3, name, description);
         }
 
-        // mark a file registry as inactive
+        // marks a file registry contract as inactive so it will not be displayed
         public async Task RemoveRegistry(string registryAddress)
         {
             await DeactivateRegistry.SendRequestAsync(MyWeb3, registryAddress);
         }
 
-        // adds new file contract for file with provided data
+        // deploys a new File smart contract in the current file registry
         public async Task NewFile(string registryAddress, File file, string fileHash, string metadataHash)
         {
             // check if it worked
@@ -85,8 +85,8 @@ namespace Flabber.Eth
             } 
         }
 
-        // adds new receipt contract for file with fileid and provided hashes
-        // returns state of new receipt
+        // deploys a new Receipt smart contract for the specified file
+        // returns the state of the receipt
         public async Task<string> NewReceipt(string registryAddress, string fileId, string fileHash,
             string metadataHash, string verifiedBy)
         {
@@ -115,7 +115,9 @@ namespace Flabber.Eth
             }
         }
 
-        // gets receipt datetimes, states, and verifiers for file with fileid
+        // creates and returns a History object by calling Eth functions GetFileAddressGivenId
+        // and GetNumberOfReceipts, which are used to loop a series of calls to
+        // GetReceiptAddressAtIndex, GetVerificationDateTime, and GetVerifiedBy
         public async Task<History> GetHistory(string registryAddress, string fileId)
         {
             History history = new History();
@@ -148,7 +150,8 @@ namespace Flabber.Eth
             return history;
         }
 
-        // gets active registry names and addresses
+        // creates and returns a RegistryList object by calling
+        // Eth functions IsRegistryActiveAtIndex, GetRegistryAddressAtIndex, and GetRegistryNameAtIndex
         public async Task<RegistryList> GetRegistryList()
         {
             RegistryList list = new RegistryList();
@@ -176,7 +179,9 @@ namespace Flabber.Eth
             return list;
         }
 
-        // filter file list down to only unregistered files
+        // filters a FileList object down to only files that do not yet exist in the registry
+        // by looping through the File objects in the FileList and calling
+        // Eth function IsRegisteredFileId on each to determine whether to add it to the new filtered FileList
         public async Task<FileList> OnlyUnregistered(string registryAddress, FileList list)
         {
             FileList filtered = new FileList();
@@ -199,7 +204,9 @@ namespace Flabber.Eth
             return filtered;
         }
 
-        // filter file list down to only unregistered files
+        // filters a FileList object down to only files that do exist in the registry
+        // by looping through the File objects in the FileList and calling
+        // Eth function IsRegisteredFileId on each to determine whether to add it to the new filtered FileList
         public async Task<FileList> OnlyRegistered(string registryAddress, FileList list)
         {
             FileList filtered = new FileList();

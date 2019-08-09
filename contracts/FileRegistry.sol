@@ -48,16 +48,20 @@ contract FileRegistry
 		MyLibrary.AddRegistry(address(this), name);
 	}
 
-	// adds file to registry
+	// adds the file with the given contract address and file ID to the 
+	// registry's file tracking if a file with that ID has not already been added
   function RegisterFile(address FileContractAddress, string FileId) 
 	external
 	{
-		require(!IsRegisteredFileContractAddress(FileContractAddress), "This contract address cannot be registered to a second file.");
+		require(!IsRegisteredFileContractAddress(FileContractAddress), 
+			"This contract address cannot be registered to a second file.");
 
 		// add lookup by address
-		FileContractAddressLookup[FileContractAddress].FileContractAddress = FileContractAddress;
+		FileContractAddressLookup[FileContractAddress].FileContractAddress 
+			= FileContractAddress;
 		FileContractAddressLookup[FileContractAddress].FileId = FileId;
-		FileContractAddressLookup[FileContractAddress].Index = FileAddressIndex.push(FileContractAddress)-1;
+		FileContractAddressLookup[FileContractAddress].Index 
+			= FileAddressIndex.push(FileContractAddress)-1;
 
 		// add look up by reg number
 		FileIdLookup[FileId].FileContractAddress = FileContractAddress;
@@ -65,7 +69,7 @@ contract FileRegistry
 		FileIdLookup[FileId].Index = FileIdIndex.push(FileId)-1;
 	}
 
-  // lookup to see if this file is registered
+  // determines if the file with the specified file ID exists in the registry
 	function IsRegisteredFileId(string FileId)
 	external 
 	view
@@ -86,6 +90,8 @@ contract FileRegistry
 		return FileIdIndex.length;
 	}
 
+	// returns the address of the File smart contract for the file 
+	// with the corresponding file ID
   function GetFileAddressGivenId(string FileId)
   external
   view
@@ -106,7 +112,8 @@ contract FileRegistry
 	{
 		if(FileAddressIndex.length == 0) return false;
 			
-		return (FileAddressIndex[FileContractAddressLookup[FileContractAddress].Index] == FileContractAddress);
+		return (FileAddressIndex[FileContractAddressLookup[FileContractAddress].Index] 
+			== FileContractAddress);
 	}
 
 	function bytes32ToString(bytes32 x)  

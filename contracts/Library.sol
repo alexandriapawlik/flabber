@@ -23,16 +23,19 @@ contract Library
 	address[] internal RegistryAddressIndex;
 
 
-	// adds registry to library
+	// adds the registry with the given contract address and name 
+	// to the library's registry tracking
   function AddRegistry(address ContractAddress, string Name) 
 	external
 	{
-		require(!ExistsContractAddress(ContractAddress), "This contract address cannot be registered to a second file registry.");
+		require(!ExistsContractAddress(ContractAddress), 
+			"This contract address cannot be registered to a second file registry.");
 
 		// add lookup by address
 		RegistryContractAddressLookup[ContractAddress].Address = ContractAddress;
 		RegistryContractAddressLookup[ContractAddress].Name = Name;
-		RegistryContractAddressLookup[ContractAddress].Index = RegistryAddressIndex.push(ContractAddress)-1;
+		RegistryContractAddressLookup[ContractAddress].Index 
+			= RegistryAddressIndex.push(ContractAddress)-1;
 		RegistryContractAddressLookup[ContractAddress].Active = true;
 	}
 
@@ -50,24 +53,30 @@ contract Library
 		return RegistryAddressIndex.length;
 	}
 
+	// returns the smart contract address of the registry 
+	// at the given index in the library's registry array
 	function GetRegistryAddressAtIndex(uint Index)
   external
   view
   returns(address at)
   {
 		// check bounds
-		require(Index < RegistryAddressIndex.length, "Index passed to GetRegistryAddressAtIndex is too large.");
+		require(Index < RegistryAddressIndex.length, 
+			"Index passed to GetRegistryAddressAtIndex is too large.");
 
     at =  RegistryAddressIndex[Index];
   }
 
+	//  returns the name of the registry at the given index 
+	// in the library's registry array
 	function GetRegistryNameAtIndex(uint Index)
   external
   view
   returns(string at)
   {
 		// check bounds
-		require(Index < RegistryAddressIndex.length, "Index passed to GetRegistryNameAtIndex is too large.");
+		require(Index < RegistryAddressIndex.length, 
+			"Index passed to GetRegistryNameAtIndex is too large.");
 
     at =  RegistryContractAddressLookup[RegistryAddressIndex[Index]].Name;
   }
@@ -78,7 +87,8 @@ contract Library
   returns(bool active)
   {
 		// check bounds
-		require(Index < RegistryAddressIndex.length, "Index passed to IsRegistryActiveAtIndex is too large.");
+		require(Index < RegistryAddressIndex.length, 
+			"Index passed to IsRegistryActiveAtIndex is too large.");
 
     active = RegistryContractAddressLookup[RegistryAddressIndex[Index]].Active;
   }
@@ -95,7 +105,8 @@ contract Library
 	{
 		if(RegistryAddressIndex.length == 0) return false;
 			
-		return (RegistryAddressIndex[RegistryContractAddressLookup[ContractAddress].Index] == ContractAddress);
+		return (RegistryAddressIndex[RegistryContractAddressLookup[ContractAddress].Index] 
+			== ContractAddress);
 	}
 
 	function compareStrings(string a, string b) 

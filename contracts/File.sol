@@ -75,7 +75,8 @@ contract File
     RegistryName = MyFileRegistry.Name();
 
 		// if file id is already registered
-		require(!MyFileRegistry.IsRegisteredFileId(FileId), "A file with this id has already been registered.");
+		require(!MyFileRegistry.IsRegisteredFileId(FileId), 
+			"A file with this id has already been registered.");
 
 		// register file
     MyFileRegistry.RegisterFile(address(this), FileId);
@@ -91,7 +92,8 @@ contract File
     State = StateType.Deleted;
   }
 
-	// create a new verification receipt for this file
+	// creates a new verification receipt for the file if the file is not deleted 
+	// and the receipt's contract address has not already been linked to an existing receipt
 	function AddReceipt(address ReceiptContractAddress) 
   external
 	returns(string ReceiptDT)
@@ -100,13 +102,17 @@ contract File
 		ReceiptDT = dtToString(parseTimestamp());
 
 		// check that file is still in use
-		require(State != StateType.Deleted, "Receipt cannot be created for a deleted file.");
-		require(!IsVerifiedReceiptContractAddress(ReceiptContractAddress), "This contract address cannot be registered to a second receipt.");
+		require(State != StateType.Deleted, 
+			"Receipt cannot be created for a deleted file.");
+		require(!IsVerifiedReceiptContractAddress(ReceiptContractAddress), 
+			"This contract address cannot be registered to a second receipt.");
 
 		// add address lookups
-    HistoryAddressLookup[ReceiptContractAddress].ReceiptContractAddress = ReceiptContractAddress;
+    HistoryAddressLookup[ReceiptContractAddress].ReceiptContractAddress 
+			= ReceiptContractAddress;
     HistoryAddressLookup[ReceiptContractAddress].VerificationDateTime = ReceiptDT;
-    HistoryAddressLookup[ReceiptContractAddress].Index = ReceiptAddressIndex.push(ReceiptContractAddress)-1;
+    HistoryAddressLookup[ReceiptContractAddress].Index 
+			= ReceiptAddressIndex.push(ReceiptContractAddress)-1;
    
 		// add datetime lookups 
     HistoryDTLookup[ReceiptDT].ReceiptContractAddress = ReceiptContractAddress;
@@ -120,7 +126,8 @@ contract File
 		if (State != StateType.Active) State = StateType.Active;
   }
 
-	// gets the verification date and time of the reciept at the given index
+	// returns the verification date and time in UTC of the receipt 
+	// at the given index in the file's receipt array
 	function GetReceiptDTAtIndex(uint idx)
 	external
 	view
@@ -133,7 +140,8 @@ contract File
 	}
 
 
-	// gets the address of the receipt at the given index
+	// returns the smart contract address of the receipt 
+	// at the given index in the file's receipt array
 	function GetReceiptAddressAtIndex(uint idx)
 	public
 	view
