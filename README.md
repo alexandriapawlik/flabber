@@ -3,7 +3,9 @@ Flabber: File Verification
 
 <br />
 
-A .NET Core 2.1 console application that accesses private Ethereum blockchain contracts using the Nethereum Web3 API and retrieves file information from OneDrive using the Microsoft Graph API
+A .NET Core 2.1 console application that accesses private Ethereum blockchain contracts using the Nethereum Web3 API and retrieves file information from OneDrive using the Microsoft Graph API.
+
+Tracks files using OneDrive's file IDs and defines file edits as a change in a file's Xor content hash.
 
 <br />
 <br />
